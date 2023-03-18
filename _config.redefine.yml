@@ -2,7 +2,7 @@
 #  Your basic info
 # ---------------------------------------------------------------------------------------
 base_info:
-  title: Be Noodles?  # Site title
+  title: 黑麦田  # Site title
   author: Mzaxd # Author name
   url: https://mzaxd.github.io # Site url
   # Logo image (You can use local image, image external link or don’t fill)
@@ -80,9 +80,12 @@ menu: #you can customize, i18n files are in the theme's languages folder. fa-reg
   Home: 
     path: / 
     icon: fa-regular fa-house # can be empty
-  Archive: 
-    path: /archives 
+  Archive:
     icon: fa-regular fa-archive # can be empty
+    submenus:
+      archives: /archives 
+      categories: /categories
+      tags: /tags
   About: 
     path: /about
     icon: fa-regular fa-user
