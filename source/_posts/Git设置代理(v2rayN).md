@@ -46,8 +46,8 @@ git config --global http.https://github.com.proxy socks5://127.0.0.1:1080
 git config --global https.https://github.com.proxy socks5://127.0.0.1:1080
 
 # http协议，1081端口修改成自己的本地代理端口
-git config --global http.https://github.com.proxy https://127.0.0.1:1081
-git config --global https.https://github.com.proxy https://127.0.0.1:1081
+git config --global http.https://github.com.proxy http://127.0.0.1:1081
+git config --global https.https://github.com.proxy http://127.0.0.1:1081
 ```
 
 ## 取消代理设置
