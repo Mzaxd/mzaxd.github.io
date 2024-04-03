@@ -53,6 +53,6 @@ git config --global https.https://github.com.proxy http://127.0.0.1:1081
 ## 取消代理设置
 
 ```bash
-git conifg --global --unset http.proxy
-git conifg --global --unset https.proxy
+git config --global --unset http.proxy
+git config --global --unset https.proxy
 ```
