@@ -1,0 +1,37 @@
+name: Debug derp path
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - source-backup
+    paths:
+      - ".github/workflows/debug-derp.yml"
+
+jobs:
+  debug:
+    name: Debug /derp path 404
+    runs-on: ubuntu-latest
+    steps:
+      - name: Diagnose nginx/derper on bj
+        env:
+          SSH_KEY: ${{ secrets.BJ_DEPLOY_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -t ed25519 47.93.100.194 >> ~/.ssh/known_hosts 2>/dev/null
+          ssh root@47.93.100.194 'bash -s' << 'EOF'
+          echo "=== 404 body: /generate_204 via 443 ==="
+          curl -sk --resolve mzaxd.fun:443:127.0.0.1 https://mzaxd.fun/generate_204 | head -3
+          echo "=== 404 body: /derp via 443 ==="
+          curl -sk --resolve mzaxd.fun:443:127.0.0.1 https://mzaxd.fun/derp | head -3
+          echo "=== direct 8444 ==="
+          curl -s -o /dev/null -w "8444 HTTP %{http_code}\n" http://127.0.0.1:8444/generate_204
+          echo "=== blog conf ==="
+          cat /etc/nginx/sites-available/blog
+          echo "=== workers ==="
+          ps -eo pid,etime,cmd | grep "nginx: worker" | grep -v grep | head -2
+          echo "=== error log tail ==="
+          tail -5 /var/log/nginx/error.log
+          EOF
