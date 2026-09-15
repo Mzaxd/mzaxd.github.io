@@ -13,7 +13,7 @@ jobs:
     name: Switch derper to relay.mzaxd.fun
     runs-on: ubuntu-latest
     steps:
-      - name: Fix derper hostname on bj
+      - name: Diagnose derper on bj
         env:
           SSH_KEY: ${{ secrets.BJ_DEPLOY_KEY }}
         run: |
@@ -22,14 +22,10 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -t ed25519 47.93.100.194 >> ~/.ssh/known_hosts 2>/dev/null
           ssh root@47.93.100.194 'bash -s' << 'EOF'
-          sed -i 's|-hostname derp-cn.mzaxd.fun|-hostname relay.mzaxd.fun|' /etc/systemd/system/derper.service
-          systemctl daemon-reload
-          systemctl restart derper
-          sleep 2
-          echo "service: $(systemctl is-active derper)"
-          ~/.acme.sh/acme.sh --install-cert -d mzaxd.fun --ecc --fullchain-file /etc/derper/relay.mzaxd.fun.crt --key-file /etc/derper/relay.mzaxd.fun.key --reloadcmd "systemctl restart derper; systemctl reload nginx" 2>&1 | tail -2
-          grep ExecStart /etc/systemd/system/derper.service
-          echo | openssl s_client -connect 127.0.0.1:8443 -servername relay.mzaxd.fun 2>/dev/null | grep subject=
-          curl -sk -o /dev/null -w "relay HTTP %{http_code}\n" --resolve relay.mzaxd.fun:443:127.0.0.1 https://relay.mzaxd.fun/generate_204
-          curl -s -o /dev/null -w "blog HTTP %{http_code}\n" https://mzaxd.fun/
+          echo "=== derper recent log ==="
+          journalctl -u derper --since "30 min ago" --no-pager | tail -25
+          echo "=== stability test x5 ==="
+          for i in 1 2 3 4 5; do curl -sk -o /dev/null -w "try$i HTTP %{http_code} in %{time_total}s\n" --resolve relay.mzaxd.fun:443:127.0.0.1 https://relay.mzaxd.fun/generate_204; done
+          echo "=== external test ==="
+          curl -sk -o /dev/null -w "relay HTTP %{http_code} in %{time_total}s\n" --max-time 15 https://relay.mzaxd.fun/generate_204
           EOF
