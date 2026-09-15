@@ -6,6 +6,9 @@ on:
     branches:
       - source-backup
 
+permissions:
+  contents: write
+
 env:
   TZ: Asia/Shanghai
 
@@ -36,13 +39,13 @@ jobs:
 
       - name: Push to GitHub Pages (master)
         env:
-          GITHUB_REPO: github.com/Mzaxd/mzaxd.github.io
+          GH_TOKEN: ${{ github.token }}
         run: |
           cd ./public && git init && git add .
           git config user.name "Mzaxd"
           git config user.email "caihaohan0712@foxmail.com"
           git commit -m "GitHub Actions Auto Builder at $(date +'%Y-%m-%d %H:%M:%S')"
-          git push --force --quiet "https://${{ secrets.ACCESS_TOKEN }}@$GITHUB_REPO" master:master
+          git push --force --quiet "https://x-access-token:$GH_TOKEN@github.com/Mzaxd/mzaxd.github.io" master:master
 
       - name: Deploy to bj server
         env:
