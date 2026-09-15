@@ -27,6 +27,7 @@ jobs:
           systemctl restart derper
           sleep 2
           echo "service: $(systemctl is-active derper)"
+          ~/.acme.sh/acme.sh --install-cert -d mzaxd.fun --ecc --fullchain-file /etc/derper/relay.mzaxd.fun.crt --key-file /etc/derper/relay.mzaxd.fun.key --reloadcmd "systemctl restart derper; systemctl reload nginx" 2>&1 | tail -2
           grep ExecStart /etc/systemd/system/derper.service
           echo | openssl s_client -connect 127.0.0.1:8443 -servername relay.mzaxd.fun 2>/dev/null | grep subject=
           curl -sk -o /dev/null -w "relay HTTP %{http_code}\n" --resolve relay.mzaxd.fun:443:127.0.0.1 https://relay.mzaxd.fun/generate_204
