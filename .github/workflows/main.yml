@@ -55,5 +55,5 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          echo "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh-keyscan -t ed25519 47.93.100.194 >> ~/.ssh/known_hosts 2>/dev/null
           rsync -az --delete ./public/ root@47.93.100.194:/var/www/blog/
