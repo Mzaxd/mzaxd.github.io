@@ -184,7 +184,7 @@ local_search:
 # Comment plugin
 # ---------------------------------------------------------------------------------------
 comment:
-  enable: true
+  enable: false # 公安备案期间暂时关闭评论
   use: waline # values: waline | gitalk | twikoo
 
   # Waline
